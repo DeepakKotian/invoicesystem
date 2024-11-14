@@ -5,6 +5,1029 @@
         "version": "1.0.0"
     },
     "paths": {
+        "/api/cart/add": {
+            "post": {
+                "tags": [
+                    "Cart"
+                ],
+                "summary": "Add a product to the cart",
+                "description": "This endpoint adds a product to the user's cart. If the product is already in the cart, it increases the quantity. If the stock is insufficient, it returns an error.",
+                "operationId": "af5c3a2c065e9b55aaa49e4cf9b0f9ab",
+                "requestBody": {
+                    "description": "Data for adding a product to the cart",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "product_id",
+                                    "quantity",
+                                    "customer_id"
+                                ],
+                                "properties": {
+                                    "product_id": {
+                                        "description": "ID of the product to add to the cart",
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "quantity": {
+                                        "description": "Quantity of the product to add",
+                                        "type": "integer",
+                                        "example": 2
+                                    },
+                                    "customer_id": {
+                                        "description": "ID of the customer",
+                                        "type": "integer",
+                                        "example": 123
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Product added to cart successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Product added to cart successfully"
+                                        },
+                                        "cart": {
+                                            "properties": {
+                                                "product_id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "quantity": {
+                                                    "type": "integer",
+                                                    "example": 3
+                                                },
+                                                "customer_id": {
+                                                    "type": "integer",
+                                                    "example": 123
+                                                },
+                                                "created_at": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": "2023-11-13T10:00:00Z"
+                                                },
+                                                "updated_at": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": "2023-11-13T10:05:00Z"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request - Insufficient Stock",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "No Stock"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Out of Stock."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Validation Error"
+                                        },
+                                        "messages": {
+                                            "properties": {
+                                                "product_id": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "The selected product_id is invalid."
+                                                    }
+                                                },
+                                                "quantity": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "The quantity field must be an integer."
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Server Error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "An unexpected error occurred."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/cart/view": {
+            "get": {
+                "tags": [
+                    "Cart"
+                ],
+                "summary": "View all items in the cart",
+                "description": "This endpoint returns all the products added to the customer's cart. If the cart is empty, a 404 response is returned.",
+                "operationId": "062ced901100f2e3380e2c6d30208775",
+                "responses": {
+                    "200": {
+                        "description": "Successfully retrieved cart items",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "cart_items": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "productId": {
+                                                        "description": "ID of the product in the cart",
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "customer_id": {
+                                                        "description": "ID of the customer",
+                                                        "type": "integer",
+                                                        "example": 123
+                                                    },
+                                                    "name": {
+                                                        "description": "Product name",
+                                                        "type": "string",
+                                                        "example": "Sample Product"
+                                                    },
+                                                    "id": {
+                                                        "description": "Product ID",
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "cartId": {
+                                                        "description": "Cart item ID",
+                                                        "type": "integer",
+                                                        "example": 10
+                                                    },
+                                                    "quantity": {
+                                                        "description": "Quantity of the product in the cart",
+                                                        "type": "integer",
+                                                        "example": 2
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Cart is empty",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Your cart is empty."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Server Error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "An unexpected error occurred."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/categories": {
+            "get": {
+                "tags": [
+                    "Categories"
+                ],
+                "summary": "Retrieve a list of all categories",
+                "description": "This endpoint returns a list of all categories available in the system.",
+                "operationId": "3f5817a34833d0a1f4af4548dd3aeaba",
+                "responses": {
+                    "200": {
+                        "description": "List of categories retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "id": {
+                                                "description": "Category ID",
+                                                "type": "integer",
+                                                "example": 1
+                                            },
+                                            "name": {
+                                                "description": "Category name",
+                                                "type": "string",
+                                                "example": "Electronics"
+                                            },
+                                            "description": {
+                                                "description": "Category description",
+                                                "type": "string",
+                                                "example": "Products related to electronics"
+                                            },
+                                            "created_at": {
+                                                "description": "Timestamp when the category was created",
+                                                "type": "string",
+                                                "format": "date-time",
+                                                "example": "2023-11-13T10:00:00Z"
+                                            },
+                                            "updated_at": {
+                                                "description": "Timestamp when the category was last updated",
+                                                "type": "string",
+                                                "format": "date-time",
+                                                "example": "2023-11-13T12:00:00Z"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Server Error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "An unexpected error occurred while retrieving the categories."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/categories/save": {
+            "post": {
+                "tags": [
+                    "Categories"
+                ],
+                "summary": "Save or update a category",
+                "description": "This endpoint is used to create a new category or update an existing one based on the provided ID.",
+                "operationId": "65764e9b461c0129e2c3bb335747a058",
+                "requestBody": {
+                    "description": "Category data to create or update",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name"
+                                ],
+                                "properties": {
+                                    "id": {
+                                        "description": "Category ID (for update)",
+                                        "type": "integer",
+                                        "example": 1,
+                                        "nullable": true
+                                    },
+                                    "name": {
+                                        "description": "Category name",
+                                        "type": "string",
+                                        "example": "Electronics"
+                                    },
+                                    "description": {
+                                        "description": "Category description",
+                                        "type": "string",
+                                        "example": "Products related to electronics",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Category saved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Category saved successfully"
+                                        },
+                                        "category": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "example": "Electronics"
+                                                },
+                                                "description": {
+                                                    "type": "string",
+                                                    "example": "Products related to electronics"
+                                                },
+                                                "created_at": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": "2023-11-13T10:00:00Z"
+                                                },
+                                                "updated_at": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": "2023-11-13T12:00:00Z"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Validation Error"
+                                        },
+                                        "messages": {
+                                            "properties": {
+                                                "name": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "The name field is required."
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Server Error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "An unexpected error occurred."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/category/delete": {
+            "post": {
+                "tags": [
+                    "Categories"
+                ],
+                "summary": "Delete a category",
+                "description": "This endpoint is used to delete a category by its ID.",
+                "operationId": "8af7639aef02c6c158ce8be329c5e200",
+                "requestBody": {
+                    "description": "Category ID to delete",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "id"
+                                ],
+                                "properties": {
+                                    "id": {
+                                        "description": "ID of the category to delete",
+                                        "type": "integer",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Category deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Category deleted successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Validation Error"
+                                        },
+                                        "messages": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "The selected id is invalid."
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Server Error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "An unexpected error occurred."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/customer/save": {
+            "post": {
+                "tags": [
+                    "Customers"
+                ],
+                "summary": "Add a new customer or update an existing customer",
+                "description": "This endpoint is used to create a new customer or update an existing one based on the provided customer ID.",
+                "operationId": "9264cf21dabaa7fdd6032a669d727ca4",
+                "requestBody": {
+                    "description": "Customer data to create or update",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "email",
+                                    "address",
+                                    "contact_number"
+                                ],
+                                "properties": {
+                                    "id": {
+                                        "description": "Customer ID (for update)",
+                                        "type": "integer",
+                                        "example": 1,
+                                        "nullable": true
+                                    },
+                                    "name": {
+                                        "description": "Customer's name",
+                                        "type": "string",
+                                        "example": "John Doe"
+                                    },
+                                    "email": {
+                                        "description": "Customer's email address",
+                                        "type": "string",
+                                        "example": "johndoe@example.com"
+                                    },
+                                    "address": {
+                                        "description": "Customer's address",
+                                        "type": "string",
+                                        "example": "1234 Main St, City, Country"
+                                    },
+                                    "contact_number": {
+                                        "description": "Customer's contact number",
+                                        "type": "string",
+                                        "example": "1234567890"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Customer created or updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Customer saved successfully"
+                                        },
+                                        "customer": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "example": "John Doe"
+                                                },
+                                                "email": {
+                                                    "type": "string",
+                                                    "example": "johndoe@example.com"
+                                                },
+                                                "address": {
+                                                    "type": "string",
+                                                    "example": "1234 Main St, City, Country"
+                                                },
+                                                "contact_number": {
+                                                    "type": "string",
+                                                    "example": "1234567890"
+                                                },
+                                                "created_at": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": "2023-11-13T10:00:00Z"
+                                                },
+                                                "updated_at": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": "2023-11-13T12:00:00Z"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Validation Error"
+                                        },
+                                        "messages": {
+                                            "properties": {
+                                                "name": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "The name field is required."
+                                                    }
+                                                },
+                                                "email": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "The email must be a valid email address."
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Server Error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "An unexpected error occurred."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/invoice/generate": {
+            "post": {
+                "tags": [
+                    "Invoice"
+                ],
+                "summary": "Generate an invoice from the customer's cart",
+                "description": "This endpoint generates an invoice for the customer based on the products in their cart. It calculates the subtotal, applies any discount, adds tax, and returns the total amount for the invoice.",
+                "operationId": "2b308879ce570e4448a665a18ffbe327",
+                "requestBody": {
+                    "description": "Invoice data to generate, including customer ID, tax rate, and optional discount",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "tax_rate",
+                                    "customer_id"
+                                ],
+                                "properties": {
+                                    "discount": {
+                                        "description": "Discount applied to the total amount (optional)",
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 10
+                                    },
+                                    "tax_rate": {
+                                        "description": "Tax rate to apply to the subtotal (in percentage)",
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 15
+                                    },
+                                    "customer_id": {
+                                        "description": "ID of the customer whose cart will be used for the invoice",
+                                        "type": "integer",
+                                        "example": 123
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Invoice generated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Invoice generated successfully"
+                                        },
+                                        "invoice": {
+                                            "properties": {
+                                                "id": {
+                                                    "description": "Invoice ID",
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "customer_name": {
+                                                    "description": "Customer's name",
+                                                    "type": "string",
+                                                    "example": "John Doe"
+                                                },
+                                                "customer_email": {
+                                                    "description": "Customer's email",
+                                                    "type": "string",
+                                                    "example": "johndoe@example.com"
+                                                },
+                                                "customer_address": {
+                                                    "description": "Customer's address",
+                                                    "type": "string",
+                                                    "example": "1234 Elm St."
+                                                },
+                                                "subtotal": {
+                                                    "description": "Subtotal of the cart items",
+                                                    "type": "number",
+                                                    "format": "float",
+                                                    "example": 100
+                                                },
+                                                "discount": {
+                                                    "description": "Discount applied",
+                                                    "type": "number",
+                                                    "format": "float",
+                                                    "example": 10
+                                                },
+                                                "tax_rate": {
+                                                    "description": "Tax rate applied",
+                                                    "type": "number",
+                                                    "format": "float",
+                                                    "example": 15
+                                                },
+                                                "tax_amount": {
+                                                    "description": "Tax amount calculated",
+                                                    "type": "number",
+                                                    "format": "float",
+                                                    "example": 13.5
+                                                },
+                                                "total_amount": {
+                                                    "description": "Total amount after discount and tax",
+                                                    "type": "number",
+                                                    "format": "float",
+                                                    "example": 103.5
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request - Cart is empty or missing required parameters",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Cart is empty"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "No products in cart to generate invoice."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Customer not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Customer not found"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The customer associated with this cart could not be found."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Validation Error"
+                                        },
+                                        "messages": {
+                                            "type": "object",
+                                            "additionalProperties": {
+                                                "type": "array",
+                                                "items": {
+                                                    "type": "string"
+                                                }
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Server Error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "An unexpected error occurred while generating the invoice."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/products": {
+            "get": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Retrieve a list of all products",
+                "description": "This endpoint returns a list of all products available in the system.",
+                "operationId": "1bfaa78d1c2c3848ab8165c5dadcad3e",
+                "responses": {
+                    "200": {
+                        "description": "List of products retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "id": {
+                                                "description": "Product ID",
+                                                "type": "integer",
+                                                "example": 1
+                                            },
+                                            "name": {
+                                                "description": "Product name",
+                                                "type": "string",
+                                                "example": "Sample Product"
+                                            },
+                                            "description": {
+                                                "description": "Product description",
+                                                "type": "string",
+                                                "example": "This is a sample product."
+                                            },
+                                            "price": {
+                                                "description": "Product price",
+                                                "type": "number",
+                                                "format": "float",
+                                                "example": 199.99
+                                            },
+                                            "quantity": {
+                                                "description": "Quantity in stock",
+                                                "type": "integer",
+                                                "example": 100
+                                            },
+                                            "category_id": {
+                                                "description": "ID of the associated category",
+                                                "type": "integer",
+                                                "example": 2
+                                            },
+                                            "created_at": {
+                                                "description": "Timestamp when the product was created",
+                                                "type": "string",
+                                                "format": "date-time",
+                                                "example": "2023-11-13T10:00:00Z"
+                                            },
+                                            "updated_at": {
+                                                "description": "Timestamp when the product was last updated",
+                                                "type": "string",
+                                                "format": "date-time",
+                                                "example": "2023-11-13T12:00:00Z"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Server Error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "An unexpected error occurred while retrieving the products."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/product/save": {
             "post": {
                 "tags": [
@@ -338,6 +1361,22 @@
         }
     },
     "tags": [
+        {
+            "name": "Cart",
+            "description": "Cart"
+        },
+        {
+            "name": "Categories",
+            "description": "Categories"
+        },
+        {
+            "name": "Customers",
+            "description": "Customers"
+        },
+        {
+            "name": "Invoice",
+            "description": "Invoice"
+        },
         {
             "name": "Products",
             "description": "Products"

@@ -8,17 +8,80 @@ use Illuminate\Support\Facades\Log;
 
 class CustomerController extends Controller
 {
-    /**
-     * Retrieve all customers.
-     */
+
     public function index()
     {
         return response()->json(Customer::all());
     }
 
     /**
-     * Add or update a customer.
+     * @OA\Post(
+     *     path="/api/customer/save",
+     *     tags={"Customers"},
+     *     summary="Add a new customer or update an existing customer",
+     *     description="This endpoint is used to create a new customer or update an existing one based on the provided customer ID.",
+     *     
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="Customer data to create or update",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             required={"name", "email", "address", "contact_number"},
+     *             @OA\Property(property="id", type="integer", nullable=true, example=1, description="Customer ID (for update)"),
+     *             @OA\Property(property="name", type="string", example="John Doe", description="Customer's name"),
+     *             @OA\Property(property="email", type="string", example="johndoe@example.com", description="Customer's email address"),
+     *             @OA\Property(property="address", type="string", example="1234 Main St, City, Country", description="Customer's address"),
+     *             @OA\Property(property="contact_number", type="string", example="1234567890", description="Customer's contact number")
+     *         )
+     *     ),
+     *     
+     *     @OA\Response(
+     *         response=201,
+     *         description="Customer created or updated successfully",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="Customer saved successfully"),
+     *             @OA\Property(property="customer", type="object",
+     *                 @OA\Property(property="id", type="integer", example=1),
+     *                 @OA\Property(property="name", type="string", example="John Doe"),
+     *                 @OA\Property(property="email", type="string", example="johndoe@example.com"),
+     *                 @OA\Property(property="address", type="string", example="1234 Main St, City, Country"),
+     *                 @OA\Property(property="contact_number", type="string", example="1234567890"),
+     *                 @OA\Property(property="created_at", type="string", format="date-time", example="2023-11-13T10:00:00Z"),
+     *                 @OA\Property(property="updated_at", type="string", format="date-time", example="2023-11-13T12:00:00Z")
+     *             )
+     *         )
+     *     ),
+     *     
+     *     @OA\Response(
+     *         response=422,
+     *         description="Validation Error",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="error", type="string", example="Validation Error"),
+     *             @OA\Property(property="messages", type="object",
+     *                 @OA\Property(property="name", type="array", 
+     *                     @OA\Items(type="string", example="The name field is required.")
+     *                 ),
+     *                 @OA\Property(property="email", type="array", 
+     *                     @OA\Items(type="string", example="The email must be a valid email address.")
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     
+     *     @OA\Response(
+     *         response=500,
+     *         description="Server Error",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="error", type="string", example="Server Error"),
+     *             @OA\Property(property="message", type="string", example="An unexpected error occurred.")
+     *         )
+     *     )
+     * )
      */
+
     public function save(Request $request)
     {
         try {
@@ -60,9 +123,7 @@ class CustomerController extends Controller
         }
     }
 
-    /**
-     * Retrieve a single customer by ID.
-     */
+
     public function show($id)
     {
         try {
@@ -82,9 +143,7 @@ class CustomerController extends Controller
         }
     }
 
-    /**
-     * Delete a customer by ID.
-     */
+
     public function destroy(Request $request)
     {
         try {
