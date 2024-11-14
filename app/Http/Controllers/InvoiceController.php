@@ -25,7 +25,7 @@ class InvoiceController extends Controller
      *             required={"tax_rate", "customer_id"},
      *             @OA\Property(property="discount", type="number", format="float", example=10.0, description="Discount applied to the total amount (optional)"),
      *             @OA\Property(property="tax_rate", type="number", format="float", example=15.0, description="Tax rate to apply to the subtotal (in percentage)"),
-     *             @OA\Property(property="customer_id", type="integer", example=123, description="ID of the customer whose cart will be used for the invoice")
+     *             @OA\Property(property="customer_id", type="integer", example=1, description="ID of the customer whose cart will be used for the invoice")
      *         )
      *     ),
      *     
@@ -155,13 +155,26 @@ class InvoiceController extends Controller
         $invoice->total_amount = $totalAmount;
         $invoice->save();
 
-
-
-        Cart::where('customer_id', $customerId)->delete();
+        // This can be saved in DB, not saving now.
+        foreach ($cartItems as $key => $value) { 
+            $arrProducts[] = [
+                'product_name'=>$value->name,
+                'quantity'=> $value->quantity,
+                'price'=> $value->price,
+                'total_amount'=> $value->price*$value->quantity,
+            ];
+        }
+        $invoice->subtotal = number_format($invoice->subtotal,2);
+        $invoice->discount = number_format($invoice->discount,2);
+        $invoice->tax_rate =  number_format($invoice->tax_rate,2);
+        $invoice->tax_amount =  number_format($invoice->tax_amount,2);
+        $invoice->total_amount = number_format($invoice->total_amount,2);
+        //Cart::where('customer_id', $customerId)->delete();
 
         return response()->json([
             'message' => 'Invoice generated successfully',
-            'invoice' => $invoice
+            'products' => $arrProducts,
+            'invoice' => $invoice,
         ], 201);
     }
 }

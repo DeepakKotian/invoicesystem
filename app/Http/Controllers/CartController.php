@@ -137,7 +137,7 @@ class CartController extends Controller
      *                 @OA\Items(
      *                     type="object",
      *                     @OA\Property(property="productId", type="integer", example=1, description="ID of the product in the cart"),
-     *                     @OA\Property(property="customer_id", type="integer", example=123, description="ID of the customer"),
+     *                     @OA\Property(property="customer_id", type="integer", example=1, description="ID of the customer"),
      *                     @OA\Property(property="name", type="string", example="Sample Product", description="Product name"),
      *                     @OA\Property(property="id", type="integer", example=1, description="Product ID"),
      *                     @OA\Property(property="cartId", type="integer", example=10, description="Cart item ID"),
@@ -171,7 +171,8 @@ class CartController extends Controller
     public function viewCart()
     {
         try {
-            $cartItems = Cart::select('products.id as productId', 'customer_id', 'products.name', 'products.id', 'carts.id as cartId', 'carts.quantity')->leftJoin('products', 'products.id', 'carts.product_id')->get();
+            $cartItems = Cart::select('products.id as productId', 'customer_id', 'products.name', 'products.id', 'carts.id as cartId', 'carts.quantity')
+                ->leftJoin('products', 'products.id', 'carts.product_id')->get();
 
             if ($cartItems->isEmpty()) {
                 return response()->json([

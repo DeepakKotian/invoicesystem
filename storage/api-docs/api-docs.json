@@ -770,7 +770,7 @@
                                     "customer_id": {
                                         "description": "ID of the customer whose cart will be used for the invoice",
                                         "type": "integer",
-                                        "example": 123
+                                        "example": 1
                                     }
                                 },
                                 "type": "object"
