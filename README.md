@@ -17,20 +17,20 @@ Getting Started
 
 Start by cloning the project repository to your local machine:
 
-git clone https://github.com/DeepakKotian/invoicesystem.git
-cd invoicesystem
+    git clone https://github.com/DeepakKotian/invoicesystem.git
+    cd invoicesystem
 
 2. Install Dependencies
 
 Run Composer to install the PHP dependencies:
 
-composer install
+    composer install
 
 3. Set Up Environment Variables
 
 Copy the .env.example file to create a new .env file:
 
-cp .env.example .env
+    cp .env.example .env
 
 Now, update the .env file with your MySQL database connection details:
 
