@@ -1,0 +1,346 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Invoice API",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/product/save": {
+            "post": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Add a new product or update an existing product",
+                "description": "This endpoint is used to create a new product or update an existing product based on the provided product ID.",
+                "operationId": "a9f8f29d8ec492bc4385e6a4d8406543",
+                "requestBody": {
+                    "description": "Product data to create or update",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "description",
+                                    "price",
+                                    "quantity",
+                                    "category_id"
+                                ],
+                                "properties": {
+                                    "id": {
+                                        "description": "Product ID (for update)",
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "name": {
+                                        "description": "Product name",
+                                        "type": "string",
+                                        "example": "Sample Product"
+                                    },
+                                    "description": {
+                                        "description": "Product description",
+                                        "type": "string",
+                                        "example": "This is a sample product."
+                                    },
+                                    "price": {
+                                        "description": "Product price",
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 199.99
+                                    },
+                                    "quantity": {
+                                        "description": "Quantity in stock",
+                                        "type": "integer",
+                                        "example": 100
+                                    },
+                                    "category_id": {
+                                        "description": "ID of the product category",
+                                        "type": "integer",
+                                        "example": 2
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Product created or updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "description": "Product ID",
+                                            "type": "integer",
+                                            "example": null
+                                        },
+                                        "name": {
+                                            "type": "string",
+                                            "example": "Sample Product"
+                                        },
+                                        "description": {
+                                            "type": "string",
+                                            "example": "This is a sample product."
+                                        },
+                                        "price": {
+                                            "type": "number",
+                                            "format": "float",
+                                            "example": 199.99
+                                        },
+                                        "quantity": {
+                                            "type": "integer",
+                                            "example": 100
+                                        },
+                                        "category_id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "created_at": {
+                                            "type": "string",
+                                            "format": "date-time",
+                                            "example": "2023-11-13T10:00:00Z"
+                                        },
+                                        "updated_at": {
+                                            "type": "string",
+                                            "format": "date-time",
+                                            "example": "2023-11-13T10:00:00Z"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request - Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Bad Request"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Validation failed for the provided product data."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Server Error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Internal server error occurred while saving the product."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/product/view/{id}": {
+            "get": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Get a product by ID",
+                "description": "Retrieve a product's details by its ID.",
+                "operationId": "546821070befb8b59e7d52bd434f0551",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the product to retrieve",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Product details retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "name": {
+                                            "type": "string",
+                                            "example": "Sample Product"
+                                        },
+                                        "description": {
+                                            "type": "string",
+                                            "example": "This is a sample product."
+                                        },
+                                        "price": {
+                                            "type": "number",
+                                            "format": "float",
+                                            "example": 199.99
+                                        },
+                                        "quantity": {
+                                            "type": "integer",
+                                            "example": 100
+                                        },
+                                        "category_id": {
+                                            "type": "integer",
+                                            "example": 2
+                                        },
+                                        "created_at": {
+                                            "type": "string",
+                                            "format": "date-time",
+                                            "example": "2023-10-04T06:13:12.000000Z"
+                                        },
+                                        "updated_at": {
+                                            "type": "string",
+                                            "format": "date-time",
+                                            "example": "2023-10-04T06:13:12.000000Z"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Product not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Product not found"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "No product found with the given ID."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/product/delete": {
+            "post": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Delete a product by ID",
+                "description": "Delete a product based on the provided ID.",
+                "operationId": "4b4394e930a8b633e27e47cf059482f5",
+                "requestBody": {
+                    "description": "The ID of the product to delete",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Product deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "example": "Deletion successful"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Product not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Product not found"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "No product found with the given ID."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Server Error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Something went wrong"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "bearerFormat": "JWT",
+                "scheme": "bearer"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Products",
+            "description": "Products"
+        }
+    ]
+}
