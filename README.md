@@ -1,9 +1,9 @@
-Invoice System  - Laravel 11 Project Setup with MySQL
+Invoice System - Laravel 11 Project Setup with MySQL
 
 This project is built using Laravel 11 and MySQL. Follow the instructions below to clone the repository, set up the environment, and run the project using Artisan commands.
 
 Prerequisites
-
+-------------
 Before setting up the project, ensure you have the following installed on your machine:
 
 - PHP >= 8.1
@@ -12,7 +12,7 @@ Before setting up the project, ensure you have the following installed on your m
 - Git
 
 Getting Started
-
+---------------
 1. Clone the Repository
 
 Start by cloning the project repository to your local machine:
@@ -66,22 +66,19 @@ Swagger Documentation is available at http://127.0.0.1:8000/api/documentation.
 Collection file name - API-Collections_2024-11-13
 
 Artisan Commands
-
+----------------
 Here are some useful Artisan commands:
 
 - To run database migrations:
-
   php artisan migrate
 
 - To run the application tests:
-
   php artisan test
 
 - To list all available Artisan commands:
-
   php artisan list
 
 References
-
+----------
 - MySQL Dump: The project includes a MySQL dump file to set up the database schema and initial data.
 - Collections: For additional functionality, refer to the collections file (API-Collections_2024-11-13).
