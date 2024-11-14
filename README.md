@@ -34,12 +34,12 @@ cp .env.example .env
 
 Now, update the .env file with your MySQL database connection details:
 
-  DB_CONNECTION=mysql
-  DB_HOST=127.0.0.1
-  DB_PORT=3306
-  DB_DATABASE=invoicesystem
-  DB_USERNAME=root
-  DB_PASSWORD=
+      DB_CONNECTION=mysql
+      DB_HOST=127.0.0.1
+      DB_PORT=3306
+      DB_DATABASE=invoicesystem
+      DB_USERNAME=root
+      DB_PASSWORD=
 
 4. Import MySQL Dump (Database Setup)
 
@@ -53,13 +53,13 @@ Migrate the Database
 
 Run the migration to set up the database schema required data:
 
-  php artisan migrate 
+      php artisan migrate 
 
 5. Serve the Application
 
 Start the Laravel development server by running:
 
-  php artisan serve
+      php artisan serve
 
 The application will be accessible at http://127.0.0.1:8000/api/.
 
@@ -72,13 +72,13 @@ Artisan Commands
 Here are some useful Artisan commands:
 
 - To run database migrations:
-    php artisan migrate
+        php artisan migrate
 
 - To run the application tests:
-    php artisan test
+        php artisan test
 
 - To list all available Artisan commands:
-    php artisan list
+        php artisan list
 
 References
 ----------
