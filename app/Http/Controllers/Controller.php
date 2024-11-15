@@ -9,7 +9,7 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
  /**
      * @OA\Info(
-     *    title="Invoice API",
+     *    title="Invoice System API",
      *    version="1.0.0",
      * )
      */

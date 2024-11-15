@@ -1,7 +1,7 @@
 {
     "openapi": "3.0.0",
     "info": {
-        "title": "Invoice API",
+        "title": "Invoice System API",
         "version": "1.0.0"
     },
     "paths": {
@@ -38,7 +38,7 @@
                                     "customer_id": {
                                         "description": "ID of the customer",
                                         "type": "integer",
-                                        "example": 123
+                                        "example": 1
                                     }
                                 },
                                 "type": "object"
@@ -785,7 +785,7 @@
                                     "id": {
                                         "description": "Customer ID (if updating an existing customer)",
                                         "type": "integer",
-                                        "example": 1,
+                                        "example": null,
                                         "nullable": true
                                     },
                                     "name": {
@@ -829,7 +829,7 @@
                                             "properties": {
                                                 "id": {
                                                     "type": "integer",
-                                                    "example": null
+                                                    "example": 1
                                                 },
                                                 "name": {
                                                     "type": "string",

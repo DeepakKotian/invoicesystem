@@ -24,7 +24,7 @@ class CartController extends Controller
      *             required={"product_id", "quantity", "customer_id"},
      *             @OA\Property(property="product_id", type="integer", example=1, description="ID of the product to add to the cart"),
      *             @OA\Property(property="quantity", type="integer", example=2, description="Quantity of the product to add"),
-     *             @OA\Property(property="customer_id", type="integer", example=123, description="ID of the customer")
+     *             @OA\Property(property="customer_id", type="integer", example=1, description="ID of the customer")
      *         )
      *     ),
      *     

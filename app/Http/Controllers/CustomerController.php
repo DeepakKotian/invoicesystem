@@ -76,7 +76,7 @@ class CustomerController extends Controller
      *         description="Customer details for creation or update",
      *         @OA\JsonContent(
      *             type="object",
-     *             @OA\Property(property="id", type="integer", nullable=true, example=1, description="Customer ID (if updating an existing customer)"),
+     *             @OA\Property(property="id", type="integer", nullable=true, example=null, description="Customer ID (if updating an existing customer)"),
      *             @OA\Property(property="name", type="string", example="John Doe", description="Customer's name"),
      *             @OA\Property(property="email", type="string", example="johndoe@example.com", description="Customer's email address"),
      *             @OA\Property(property="address", type="string", example="1234 Main St, City, Country", description="Customer's address"),
@@ -91,7 +91,7 @@ class CustomerController extends Controller
      *             type="object",
      *             @OA\Property(property="message", type="string", example="Customer saved successfully"),
      *             @OA\Property(property="data", type="object",
-     *                 @OA\Property(property="id", type="integer", example=null),
+     *                 @OA\Property(property="id", type="integer", example=1),
      *                 @OA\Property(property="name", type="string", example="John Doe"),
      *                 @OA\Property(property="email", type="string", example="johndoe@example.com"),
      *                 @OA\Property(property="address", type="string", example="1234 Main St, City, Country"),
