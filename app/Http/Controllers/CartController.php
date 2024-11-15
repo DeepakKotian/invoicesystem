@@ -37,7 +37,7 @@ class CartController extends Controller
      *             @OA\Property(property="cart", type="object",
      *                 @OA\Property(property="product_id", type="integer", example=1),
      *                 @OA\Property(property="quantity", type="integer", example=3),
-     *                 @OA\Property(property="customer_id", type="integer", example=123),
+     *                 @OA\Property(property="customer_id", type="integer", example=1),
      *                 @OA\Property(property="created_at", type="string", format="date-time", example="2023-11-13T10:00:00Z"),
      *                 @OA\Property(property="updated_at", type="string", format="date-time", example="2023-11-13T10:05:00Z")
      *             )
@@ -87,18 +87,16 @@ class CartController extends Controller
     {
         $validatedData = $request->validate([
             'product_id' => 'required|exists:products,id',
-            'quantity' => 'required|integer|min:1'
+            'quantity' => 'required|integer|min:1',
+            'customer_id' => 'required|exists:customers,id',
         ]);
 
         try {
             $product = Product::findOrFail($request->product_id);
             if ($product->quantity < $request->quantity) {
-                return response()->json([
-                    'error' => 'No Stock',
-                    'message' => 'Out of Stock.'
-                ], 400);
+                return $this->errorResponse('Product Out of Stock.');
             }
-            $cart = Cart::where('product_id', $request->product_id)->first();
+            $cart = Cart::where('product_id', $request->product_id)->where('customer_id',$request->customer_id)->first();
             if ($cart) {
                 $cart->quantity += $request->quantity;
                 $cart->save();
@@ -110,15 +108,10 @@ class CartController extends Controller
                 $cart->save();
             }
 
-            return response()->json([
-                'message' => 'Product added to cart successfully',
-                'cart' => $cart
-            ], 201);
+      
+            return $this->successResponse('Product added to cart successfully',$cart);
         } catch (\Exception $e) {
-            return response()->json([
-                'error' => 'Server Error',
-                'message' => $e->getMessage()
-            ], 500);
+           return $this->errorResponse('Server Error', $e->getMessage());
         }
     }
     /**
@@ -181,7 +174,7 @@ class CartController extends Controller
             }
 
             return response()->json([
-                'cart_items' => $cartItems
+                'data' => $cartItems
             ], 200);
         } catch (\Exception $e) {
             return response()->json([
@@ -195,27 +188,21 @@ class CartController extends Controller
     public function removeFromCart(Request $request)
     {
         $validatedData = $request->validate([
-            'product_id' => 'required|exists:carts,product_id'
+            'product_id' => 'required|exists:carts,product_id',
+            'customer_id' => 'required|exists:customers,id',
         ]);
 
         try {
-            $cart = Cart::where('product_id', $validatedData['product_id'])->first();
+            $cart = Cart::where('product_id', $validatedData['product_id'])->where('customer_id', $validatedData['customer_id'])->first();
             if ($cart) {
                 $cart->delete();
-                return response()->json([
-                    'message' => 'Product removed from cart successfully'
-                ], 200);
+                return $this->successResponse('Product removed from cart successfully');
             }
 
-            return response()->json([
-                'error' => 'Product Not Found in Cart',
-                'message' => 'The specified product is not in your cart.'
-            ], 404);
+            return $this->errorResponse('The specified product is not in your cart.');
+            
         } catch (\Exception $e) {
-            return response()->json([
-                'error' => 'Server Error',
-                'message' => $e->getMessage()
-            ], 500);
+            return $this->errorResponse('Server Error');
         }
     }
 }

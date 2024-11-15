@@ -24,38 +24,43 @@ class ProductControllerTest extends TestCase
             'name' => 'Test Category',
             'description' => 'Test Description',
         ]);
-
+    
         // Prepare data for the new product with valid category_id
         $productData = [
-            'name' => 'Test Product',
-            'description' => 'Test Description',
-            'price' => 100.0,
-            'quantity' => 10,
-            'category_id' => $category->id, // Use the ID of the created category
+            'name' => 'Sample Product 1',
+            'description' => 'This is a sample product description.',
+            'price' => 10,
+            'quantity' => 50,
+            'category_id' => $category->id,
         ];
-
+    
         // Send POST request to the save method
         $response = $this->postJson('/api/product/save', $productData);
-
+    
         // Assert the response is successful and the product was created
         $response->assertStatus(201);
         $response->assertJson([
-            'name' => 'Test Product',
-            'description' => 'Test Description',
-            'price' => 100.0,
-            'quantity' => 10,
-            'category_id' => $category->id, // Ensure the category_id matches
+            'status' => 'Success',
+            'message' => ['Saved successfully'], // Match the array format
+            'data' => [
+                'name' => 'Sample Product 1',
+                'description' => 'This is a sample product description.',
+                'price' => 10,
+                'quantity' => 50,
+                'category_id' => $category->id,
+            ],
         ]);
-
+       
         // Verify that the product is saved in the database
         $this->assertDatabaseHas('products', [
-            'name' => 'Test Product',
-            'description' => 'Test Description',
-            'price' => 100.0,
-            'quantity' => 10,
+            'name' => 'Sample Product 1',
+            'description' => 'This is a sample product description.',
+            'price' => 10,
+            'quantity' => 50,
             'category_id' => $category->id,
         ]);
     }
+    
 
     /**
      * Test validation error when required fields are missing.

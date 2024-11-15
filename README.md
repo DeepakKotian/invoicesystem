@@ -1,6 +1,6 @@
-Invoice System - Laravel 11 Project Setup with MySQL
+Invoice System - Laravel Project Setup with MySQL
 
-This project is built using Laravel 11 and MySQL. Follow the instructions below to clone the repository, set up the environment, and run the project using Artisan commands.
+This project is built using Laravel(version 9) and MySQL. Follow the instructions below to clone the repository, set up the environment, and run the project using Artisan commands.
 
 Prerequisites
 -------------

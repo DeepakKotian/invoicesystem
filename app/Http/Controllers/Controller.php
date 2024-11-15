@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Traits\ResponserTrait;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
@@ -11,16 +12,9 @@ use Illuminate\Routing\Controller as BaseController;
      *    title="Invoice API",
      *    version="1.0.0",
      * )
-     * @OA\SecurityScheme(
-     *     type="http",
-     *     securityScheme="bearerAuth",
-     *     scheme="bearer",
-     *     bearerFormat="JWT"
-     * )
-
-    */
+     */
 class Controller extends BaseController
 {
-    use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
+    use AuthorizesRequests, DispatchesJobs, ValidatesRequests, ResponserTrait;
    
 }

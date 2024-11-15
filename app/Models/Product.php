@@ -8,4 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class Product extends Model
 {
     use HasFactory;
+    protected $casts = [
+        'subtotal' => 'float',
+        'discount' => 'float',
+        'tax_rate' => 'float',
+    ];
 }

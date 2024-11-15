@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\CreateProductAction;
 use App\Http\Requests\ProductFormRequest;
+use App\Http\Resources\ProductResource;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redis;
@@ -10,45 +12,58 @@ use Illuminate\Support\Facades\Redis;
 class ProductController extends Controller
 {
     /**
- * @OA\Get(
- *     path="/api/products",
- *     tags={"Products"},
- *     summary="Retrieve a list of all products",
- *     description="This endpoint returns a list of all products available in the system.",
- *     
- *     @OA\Response(
- *         response=200,
- *         description="List of products retrieved successfully",
- *         @OA\JsonContent(
- *             type="array",
- *             @OA\Items(
- *                 type="object",
- *                 @OA\Property(property="id", type="integer", example=1, description="Product ID"),
- *                 @OA\Property(property="name", type="string", example="Sample Product", description="Product name"),
- *                 @OA\Property(property="description", type="string", example="This is a sample product.", description="Product description"),
- *                 @OA\Property(property="price", type="number", format="float", example=199.99, description="Product price"),
- *                 @OA\Property(property="quantity", type="integer", example=100, description="Quantity in stock"),
- *                 @OA\Property(property="category_id", type="integer", example=2, description="ID of the associated category"),
- *                 @OA\Property(property="created_at", type="string", format="date-time", example="2023-11-13T10:00:00Z", description="Timestamp when the product was created"),
- *                 @OA\Property(property="updated_at", type="string", format="date-time", example="2023-11-13T12:00:00Z", description="Timestamp when the product was last updated")
- *             )
- *         )
- *     ),
- *     
- *     @OA\Response(
- *         response=500,
- *         description="Server Error",
- *         @OA\JsonContent(
- *             type="object",
- *             @OA\Property(property="error", type="string", example="Server Error"),
- *             @OA\Property(property="message", type="string", example="An unexpected error occurred while retrieving the products.")
- *         )
- *     )
- * )
- */
+     * @OA\Get(
+     *     path="/api/products",
+     *     tags={"Products"},
+     *     summary="Retrieve a paginated list of products",
+     *     description="This endpoint returns a paginated list of products available in the system.",
+     *     
+     *     @OA\Response(
+     *         response=200,
+     *         description="Paginated list of products retrieved successfully",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="current_page", type="integer", example=1, description="Current page number"),
+     *             @OA\Property(property="data", type="array", description="List of products for the current page",
+     *                 @OA\Items(
+     *                     type="object",
+     *                     @OA\Property(property="id", type="integer", example=1, description="Product ID"),
+     *                     @OA\Property(property="name", type="string", example="Sample Product", description="Product name"),
+     *                     @OA\Property(property="description", type="string", example="This is a sample product.", description="Product description"),
+     *                     @OA\Property(property="price", type="number", format="float", example=199.99, description="Product price"),
+     *                     @OA\Property(property="quantity", type="integer", example=100, description="Quantity in stock"),
+     *                     @OA\Property(property="category_id", type="integer", example=2, description="ID of the associated category"),
+     *                     
+     *                 )
+     *             ),
+     *             @OA\Property(property="first_page_url", type="string", example="http://example.com/api/products?page=1", description="URL for the first page"),
+     *             @OA\Property(property="from", type="integer", example=1, description="Starting record number on the current page"),
+     *             @OA\Property(property="last_page", type="integer", example=10, description="Total number of pages"),
+     *             @OA\Property(property="last_page_url", type="string", example="http://example.com/api/products?page=10", description="URL for the last page"),
+     *             @OA\Property(property="next_page_url", type="string", nullable=true, example="http://example.com/api/products?page=2", description="URL for the next page, if available"),
+     *             @OA\Property(property="path", type="string", example="http://example.com/api/products", description="Base URL for the API"),
+     *             @OA\Property(property="per_page", type="integer", example=15, description="Number of records per page"),
+     *             @OA\Property(property="prev_page_url", type="string", nullable=true, example=null, description="URL for the previous page, if available"),
+     *             @OA\Property(property="to", type="integer", example=15, description="Ending record number on the current page"),
+     *             @OA\Property(property="total", type="integer", example=150, description="Total number of records available")
+     *         )
+     *     ),
+     *     
+     *     @OA\Response(
+     *         response=500,
+     *         description="Server Error",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="error", type="string", example="Server Error"),
+     *             @OA\Property(property="message", type="string", example="An unexpected error occurred.")
+     *         )
+     *     )
+     * )
+     */
+
     public function index()
     {
-        return response()->json(Product::all());
+        return ProductResource::collection(Product::paginate());
     }
 
     /**
@@ -64,7 +79,7 @@ class ProductController extends Controller
      *         @OA\JsonContent(
      *             type="object",
      *             required={"name", "description", "price", "quantity", "category_id"},
-     *             @OA\Property(property="id", type="integer", example=1, description="Product ID (for update)"),
+     *             @OA\Property(property="id", type="integer", example=null, description="Product ID (for update)"),
      *             @OA\Property(property="name", type="string", example="Sample Product", description="Product name"),
      *             @OA\Property(property="description", type="string", example="This is a sample product.", description="Product description"),
      *             @OA\Property(property="price", type="number", format="float", example=199.99, description="Product price"),
@@ -78,7 +93,7 @@ class ProductController extends Controller
      *         description="Product created or updated successfully",
      *         @OA\JsonContent(
      *             type="object",
-     *             @OA\Property(property="id", type="integer", example=null, description="Product ID"),
+     *             @OA\Property(property="id", type="integer", example=1, description="Product ID"),
      *             @OA\Property(property="name", type="string", example="Sample Product"),
      *             @OA\Property(property="description", type="string", example="This is a sample product."),
      *             @OA\Property(property="price", type="number", format="float", example=199.99),
@@ -104,49 +119,14 @@ class ProductController extends Controller
      *         description="Server Error",
      *         @OA\JsonContent(
      *             type="object",
-     *             @OA\Property(property="error", type="string", example="Server Error"),
-     *             @OA\Property(property="message", type="string", example="Internal server error occurred while saving the product.")
+     *             @OA\Property(property="message", type="string", example="Server Error")
      *         )
      *     )
      * )
      */
     public function save(ProductFormRequest $request)
     {
-        try {
-            // If the 'id' is provided, try to find the existing product.
-            if (!empty($request->id) && isset($request->id)) {
-                $product = Product::find($request->id);
-
-                // If product not found, return an error message
-                if (!$product) {
-                    return response()->json([
-                        'error' => 'Product not found',
-                        'message' => 'No product found with the given ID for update.'
-                    ], 404);
-                }
-            } else {
-                // If 'id' is not provided, create a new product
-                $product = new Product();
-            }
-
-            // Assign values to product fields
-            $product->name = $request->name;
-            $product->description = $request->description;
-            $product->price = $request->price;
-            $product->quantity = $request->quantity;
-            $product->category_id = $request->category_id;
-
-            // Save the product
-            $product->save();
-
-            // Return a successful response with the product data
-            return response()->json($product, 201);
-        } catch (\Exception $e) {
-            return response()->json([
-                'error' => 'Server Error',
-                'message' => $e->getMessage()
-            ], 500);
-        }
+        return (new CreateProductAction)->handle($request);
     }
 
     /**
@@ -191,19 +171,17 @@ class ProductController extends Controller
      *     )
      * )
      */
+
     public function show($id)
     {
-        $product = Product::find($id);
-
-        if (!$product) {
-            return response()->json([
-                'error' => 'Product not found',
-                'message' => 'No product found with the given ID.'
-            ], 404);
+        try {
+            $product = Product::findOrFail($id);
+            return new ProductResource($product);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return $this->errorResponse('Product not found', 404);
         }
-
-        return response()->json($product);
     }
+    
 
 
     /**
@@ -256,12 +234,9 @@ class ProductController extends Controller
             ]);
             $checkProduct = Product::find($request->id);
             $checkProduct->delete();
-            return response()->json('Deletion successful', 200);
+            return $this->successResponse('Deletion successful');
         } catch (\Exception $e) {
-            return response()->json([
-                'error' => 'Server Error',
-                'message' => 'Something went wrong'
-            ], 500);
+            return $this->errorResponse('Server Error', 500);
         }
     }
 }

@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\InvoiceFormRequest;
 use App\Models\Cart;
 use App\Models\Invoice;
 use App\Models\Customer;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+
 
 class InvoiceController extends Controller
 {
@@ -91,16 +91,8 @@ class InvoiceController extends Controller
      * )
      */
 
-    public function generateInvoice(Request $request)
+    public function generateInvoice(InvoiceFormRequest $request)
     {
-
-        $validatedData = $request->validate([
-            'discount' => 'nullable|numeric|min:0',
-            'tax_rate' => 'required|numeric|min:0',
-            'customer_id' => 'required|exists:customers,id',
-        ]);
-
-
         $cartItems = Cart::leftJoin('products', 'carts.product_id', '=', 'products.id')
             ->select('carts.product_id', 'carts.quantity', 'products.price', 'products.name', 'carts.customer_id')
             ->where('customer_id', $request->customer_id)
@@ -108,24 +100,15 @@ class InvoiceController extends Controller
 
 
         if ($cartItems->isEmpty()) {
-            return response()->json([
-                'error' => 'Cart is empty',
-                'message' => 'No products in cart to generate invoice.'
-            ], 400);
+            return $this->errorResponse('No products in cart to generate invoice.', 400);
         }
-
 
         $customerId = $request->customer_id;
         $customer = Customer::find($request->customer_id);
 
-
         if (!$customer) {
-            return response()->json([
-                'error' => 'Customer not found',
-                'message' => 'The customer associated with this cart could not be found.'
-            ], 404);
+            return $this->errorResponse('The customer associated with this cart could not be found.', 404);
         }
-
 
         $subtotal = 0;
         foreach ($cartItems as $item) {
@@ -138,8 +121,7 @@ class InvoiceController extends Controller
         $subtotalAfterDiscount = $subtotal - $discountAmount;
 
 
-        $taxAmount = ($validatedData['tax_rate'] / 100) * $subtotalAfterDiscount;
-
+        $taxAmount = ($request->tax_rate / 100) * $subtotalAfterDiscount;
 
         $totalAmount = $subtotalAfterDiscount + $taxAmount;
 
@@ -150,26 +132,27 @@ class InvoiceController extends Controller
         $invoice->customer_address = $customer->address;
         $invoice->subtotal = $subtotal;
         $invoice->discount = $discountAmount;
-        $invoice->tax_rate = $validatedData['tax_rate'];
+        $invoice->tax_rate = $request->tax_rate;
         $invoice->tax_amount = $taxAmount;
         $invoice->total_amount = $totalAmount;
         $invoice->save();
 
         // This can be saved in DB, not saving now.
-        foreach ($cartItems as $key => $value) { 
+        foreach ($cartItems as $key => $value) {
             $arrProducts[] = [
-                'product_name'=>$value->name,
-                'quantity'=> $value->quantity,
-                'price'=> $value->price,
-                'total_amount'=> $value->price*$value->quantity,
+                'product_name' => $value->name,
+                'quantity' => $value->quantity,
+                'price' => $value->price,
+                'total_amount' => $value->price * $value->quantity,
             ];
         }
-        $invoice->subtotal = number_format($invoice->subtotal,2);
-        $invoice->discount = number_format($invoice->discount,2);
-        $invoice->tax_rate =  number_format($invoice->tax_rate,2);
-        $invoice->tax_amount =  number_format($invoice->tax_amount,2);
-        $invoice->total_amount = number_format($invoice->total_amount,2);
-        //Cart::where('customer_id', $customerId)->delete();
+        $invoice->subtotal = (float)number_format($invoice->subtotal, 2);
+        $invoice->discount = (float)number_format($invoice->discount, 2);
+        $invoice->tax_rate =  (float)number_format($invoice->tax_rate, 2);
+        $invoice->tax_amount =  (float)number_format($invoice->tax_amount, 2);
+        $invoice->total_amount = (float)number_format($invoice->total_amount, 2);
+
+        Cart::where('customer_id', $customerId)->delete();
 
         return response()->json([
             'message' => 'Invoice generated successfully',

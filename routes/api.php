@@ -19,14 +19,12 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// Route::get('/test', function (Request $request) {
-//     return 'hello';
-// });
 
 Route::get('categories', [CategoryController::class, 'index']); 
 Route::post('category/save', [CategoryController::class, 'save']); 
+Route::put('category/update', [CategoryController::class, 'update']); 
 Route::get('category/view/{id}', [CategoryController::class, 'show']); 
-Route::post('category/delete', [CategoryController::class, 'destroy']); 
+Route::delete('category/delete/{id}', [CategoryController::class, 'destroy']); 
 
 Route::get('products', [ProductController::class, 'index']); 
 Route::post('product/save', [ProductController::class, 'save']); 

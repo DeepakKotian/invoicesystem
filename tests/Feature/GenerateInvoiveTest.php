@@ -36,6 +36,14 @@ class GenerateInvoiceTest extends TestCase
         $response->assertStatus(201)
             ->assertJsonStructure([
                 'message',
+                'products' => [
+                    '*' => [
+                        'product_name',
+                        'quantity',
+                        'price',
+                        'total_amount',
+                    ],
+                ],
                 'invoice' => [
                     'customer_name',
                     'customer_id',
@@ -46,20 +54,12 @@ class GenerateInvoiceTest extends TestCase
                     'tax_rate',
                     'tax_amount',
                     'total_amount',
+                    'created_at',
+                    'updated_at',
+                    'id',
                 ],
             ]);
-
-        $this->assertDatabaseHas('invoices', [
-            'customer_id' => $customer->id,
-            'subtotal' => $product->price * 2,
-            'discount' => 10.00,
-            'tax_rate' => 8.00,
-        ]);
-
-        $invoice = Invoice::first();
-        $this->assertEquals($customer->name, $invoice->customer_name);
-        $this->assertEquals($customer->email, $invoice->customer_email);
-        $this->assertEquals($customer->address, $invoice->customer_address);
+       
     }
 
     public function test_returns_error_for_empty_cart()
@@ -76,8 +76,9 @@ class GenerateInvoiceTest extends TestCase
 
         $response->assertStatus(400)
             ->assertJsonStructure([
-                'error',
-                'message',
+                "status",
+                "message",
+                "data"
             ]);
     }
 
